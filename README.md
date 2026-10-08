@@ -85,15 +85,42 @@
 
 ---
 
-## 工程与实习经历
+## 工程经历
 
-**水木分子 · 算法实习生** — 基于 LLM 从文献 PDF 中抽取疾病–通路关系，构建生物医学知识图谱；负责抽取模块的 prompt 设计与多模型对比评估。
+> **关于链接**：以下项目位于公司内部 GitLab / 私有仓库，涉及公司资产，**不提供公开链接**。
+> 项目结构、代码与设计细节可在面试中当面说明。
 
-**文档解析方案选型** — 对 MinerU / DeepDoc 等本地 PDF 解析方案做效果对比与选型评估，用于金融文档问答场景。
+### 📜 中国专利智能撰写系统 · OpenPatent-CN
 
-**模型服务线上验证** — 参与视觉识别服务的线上验证：阈值调优、配置变更的生效验证与指标回归，按确定的判据（配置校验 + 指标对比）判断改动是否达标，而非凭观感。
+把「一段技术描述」推进到「一份可提交的中国专利申请文件」的 LLM Agent 流水线：
+技术事实提取 → 创新点挖掘 → 权利要求书 + 六章技术交底书 → 审查模拟 → 多格式导出。
 
-**专利文本工具** — 专利披露材料生成工具，多项目并行，接入自建模型端点。
+`Python` `Flask` `LLM Agent` `docx / PDF` 　·　 119 个源文件 / 42 次提交
+
+- **技术事实层（FactStore）**：所有 Agent 只能引用 FactStore 中可验证的事实，**从架构上禁止编造数据**；Claim → Experiment / Benchmark 形成可追溯的证据链，审查答复时可一键回溯「依据是什么」。
+- **保护范围自博弈**：Generalize → Expand → Narrow 迭代搜索「最大保护范围」与「可授权边界」的平衡点。
+- **审查员模拟**：按中国专利三步法（确定最接近现有技术 → 区别技术特征 → 显而易见性判断）自动生成审查意见并回检。
+- **联网查新**：接入 CNIPA / Google Patents / ArXiv / Semantic Scholar 做真实检索，而不是依赖模型内部记忆。
+- **输出闭环**：Markdown / DOCX / PDF 导出，交底书含可交互流程图（可拖拽缩放、PNG/PDF 导出）。
+
+### 📊 专利材料自动评测服务 · Patent Agent Eval
+
+**刻意不用 LLM 打分**的规则评测体系 —— 因为模型评分不可复现、漂移难解释；
+改用确定性规则后，**每一分都能定位到触发它的那句原文**。
+
+`Python` `规则引擎` `HTTP 服务` 　·　 44 个源文件 / 19 次提交
+
+- 三套判定体系（说明书 / 权利要求书 / 摘要）+ 三性总评（新颖性 / 创造性 / 实用性），逐维度带权重。
+- **硬闸门设计**：如摘要超过 300 字直接封顶 59 分 —— 结构性违规不允许被其他维度的高分稀释。
+- 输出结构化评分卡 `scorecard.json` + 中文报告，含逐维度得分与扣分原因。
+- 以 HTTP 服务形式接入撰写流水线，形成「生成 → 评测 → 回改」的闭环。
+
+### 🔬 其他工程与实习
+
+- **水木分子 · 算法实习生** — 基于 LLM 从文献 PDF 中抽取疾病–通路关系，构建生物医学知识图谱；负责抽取模块的 prompt 设计与多模型对比评估。
+- **文档解析方案选型** — 对 MinerU / DeepDoc 等本地 PDF 解析方案做效果对比与选型评估，用于金融文档问答场景。
+- **模型服务线上验证** — 参与视觉识别服务的线上验证：阈值调优、配置变更的生效验证与指标回归。按确定的判据（配置校验 + 指标对比）判断改动是否达标，而非凭观感。
+- **RAG 知识库服务（私有仓库 · 在研）** — FastAPI + pgvector + 异步 SQLAlchemy + 对象存储的检索服务骨架，含健康检查与容器化编排；检索与生成链路正在实现中，尚未达到可展示的完成度。
 
 ---
 
@@ -105,9 +132,9 @@
 
 **框架**　FastAPI · Flask · LangGraph · PyTorch
 
-**数据**　Milvus · Elasticsearch · MemGraph · PostgreSQL / Supabase
+**数据**　PostgreSQL / pgvector · Milvus · Elasticsearch · MemGraph · Supabase
 
-**工程**　Git · Docker · Linux · 单元测试与回归测试 · 配置管理与灰度验证
+**工程**　Git · Docker · Linux · 单元测试与回归测试 · 配置管理与灰度验证 · 规则化评测体系（可复现、可追溯）
 
 ---
 
@@ -156,15 +183,26 @@ I prefer building systems as independently verifiable modules, each with its own
 
 **Experience**
 
+> Projects below live in internal GitLab / private repositories and belong to the companies involved, so **no public links are provided**. Structure and implementation details available on request.
+
+- **OpenPatent-CN — Chinese patent drafting system (LLM agent pipeline)** — Turns a technical description into a filing-ready Chinese patent application: fact extraction → novelty mining → claims + six-chapter disclosure → examiner simulation → multi-format export. 119 source files / 42 commits.
+  - *FactStore layer*: every agent may only cite verifiable facts, so fabrication is blocked at the architecture level; Claim → Experiment evidence chains stay traceable.
+  - *Scope self-play*: Generalize → Expand → Narrow search for the balance between maximum protection and allowable boundary.
+  - *Examiner simulation*: automatic office-action drafts following China's three-step obviousness test.
+  - *Live prior-art search* across CNIPA / Google Patents / ArXiv / Semantic Scholar.
+- **Patent Agent Eval — rule-based evaluation service** — Deliberately **does not use an LLM as the grader**, because model scores drift and are hard to reproduce; deterministic rules mean every point maps back to the sentence that triggered it. 44 source files / 19 commits.
+  - Three document rubrics (specification / claims / abstract) plus a novelty–inventiveness–utility assessment, each dimension weighted.
+  - *Hard gates*: an abstract over 300 characters is capped at 59 regardless of other dimensions.
+  - Structured `scorecard.json` + Chinese-language report; served over HTTP so the drafting pipeline can call it — closing the generate → evaluate → revise loop.
 - **Algorithm Intern, ShuiMuFenZi (AI drug discovery)** — LLM-based relation extraction from literature PDFs into a biomedical knowledge graph; prompt design and multi-model evaluation.
 - **Document-parsing benchmark** — Comparative evaluation of local PDF-parsing pipelines (MinerU, DeepDoc) for a financial document QA scenario.
 - **Production model validation** — Online validation of a vision service: threshold tuning, verifying config rollouts took effect, and metric regression against defined criteria.
-- **Patent disclosure tooling** — Generation tool for patent disclosure drafts, multi-project, self-hosted model endpoint.
+- **RAG knowledge-base service (private repo · in progress)** — FastAPI + pgvector + async SQLAlchemy + object storage; health checks and containerised orchestration in place, retrieval and generation pipeline still being implemented — not yet at a demonstrable state.
 
 ---
 
 **Skills**
 
-Python · JavaScript/TypeScript · SQL ｜ LLM Agents · RAG (hybrid retrieval, RRF, reranking) · Prompt Engineering · Multi-model Evaluation ｜ FastAPI · Flask · LangGraph · PyTorch ｜ Milvus · Elasticsearch · MemGraph · PostgreSQL/Supabase ｜ Git · Docker · Linux · Testing & Regression
+Python · JavaScript/TypeScript · SQL ｜ LLM Agents · RAG (hybrid retrieval, RRF, reranking) · Prompt Engineering · Multi-model Evaluation ｜ FastAPI · Flask · LangGraph · PyTorch ｜ PostgreSQL/pgvector · Milvus · Elasticsearch · MemGraph · Supabase ｜ Git · Docker · Linux · Testing & Regression · Rule-based evaluation (reproducible & traceable)
 
 </details>
