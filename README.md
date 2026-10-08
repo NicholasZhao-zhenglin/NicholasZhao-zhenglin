@@ -6,7 +6,7 @@
 
 北京科技大学 · 人工智能 · 硕士在读 · 北京
 
-📧 **15623221569@163.com** 　·　 🐙 **[github.com/NicholasZhao-zhenglin](https://github.com/NicholasZhao-zhenglin)** 　·　 🌐 **你的个人主页**
+📧 **15623221569@163.com** 　·　 🐙 **[github.com/NicholasZhao-zhenglin](https://github.com/NicholasZhao-zhenglin)**
 
 </div>
 
